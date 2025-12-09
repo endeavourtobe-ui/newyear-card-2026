@@ -5,430 +5,712 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>北京金路国际2026新年互动贺卡</title>
     <style>
-        /* 信封样式 */
-        .envelope {
-            width: 320px; height: 200px;
-            background: white; border-radius: 10px;
-            box-shadow: 0 15px 50px rgba(139, 69, 19, 0.3);
-            margin: 100px auto 50px;
-            cursor: pointer;
-            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f9f3e9 0%, #f1e8d8 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* 信封容器 */
+        .envelope-container {
             position: relative;
+            width: 100%;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        /* 俄罗斯风格信封 */
+        .envelope {
+            position: relative;
+            width: 500px;
+            height: 350px;
+            background: #f5f0e6;
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            box-shadow: 
+                0 20px 50px rgba(139, 69, 19, 0.3),
+                inset 0 0 30px rgba(212, 175, 55, 0.1);
+            cursor: pointer;
+            transition: all 0.5s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
             overflow: hidden;
-            border: 2px solid #e8d9a3;
         }
         
         .envelope:hover {
-            transform: translateY(-10px) scale(1.03);
-            box-shadow: 0 25px 70px rgba(139, 69, 19, 0.4);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 30px 70px rgba(139, 69, 19, 0.4),
+                inset 0 0 30px rgba(212, 175, 55, 0.15);
         }
         
-        .envelope.active {
-            transform: translateY(-20px) scale(1.1);
-            opacity: 0;
-            pointer-events: none;
+        .envelope.open {
+            animation: envelopeOpen 1.2s ease forwards;
         }
         
-        /* 信封盖 */
-        .envelope-flap {
-            height: 60px;
-            background: linear-gradient(135deg, #f5c542 0%, #d4af37 100%);
-            border-radius: 10px 10px 0 0;
+        /* 信封正面 */
+        .envelope-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #f5f0e6;
+            backface-visibility: hidden;
+        }
+        
+        /* 信封纹理 */
+        .envelope-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 20px,
+                    rgba(212, 175, 55, 0.05) 20px,
+                    rgba(212, 175, 55, 0.05) 40px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 20px,
+                    rgba(212, 175, 55, 0.05) 20px,
+                    rgba(212, 175, 55, 0.05) 40px
+                );
+        }
+        
+        /* 邮票区域 - 俄罗斯风格 */
+        .stamp-area {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 90px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* 俄罗斯邮票 */
+        .russian-stamp {
+            width: 70px;
+            height: 90px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            border: 2px solid #c41e3a;
+            border-radius: 8px;
+            padding: 8px;
             position: relative;
-            border-bottom: 3px solid #b8941f;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+            transform: rotate(5deg);
         }
         
-        /* 火漆印章 */
+        .stamp-design {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #c41e3a;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stamp-design:before {
+            content: "2026";
+            position: absolute;
+            top: 5px;
+            font-size: 10px;
+            color: #c41e3a;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .stamp-design:after {
+            content: "ПОЧТА";
+            position: absolute;
+            bottom: 5px;
+            font-size: 9px;
+            color: #c41e3a;
+            font-weight: bold;
+        }
+        
+        .stamp-center {
+            font-size: 24px;
+            color: #c41e3a;
+            font-weight: bold;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        /* 火漆印章 - 可点击 */
         .wax-seal {
             position: absolute;
-            top: -30px;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
-            width: 60px;
-            height: 60px;
-            background: #c41e3a;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #c41e3a 0%, #a5172b 100%);
             border-radius: 50%;
-            border: 5px solid white;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            animation: pulse 3s infinite alternate;
+            border: 5px solid #f5f0e6;
+            box-shadow: 
+                0 10px 25px rgba(196, 30, 58, 0.4),
+                inset 0 0 15px rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: sealPulse 3s infinite alternate;
         }
         
-        .wax-seal:before {
-            content: "金";
-            color: white;
-            font-size: 24px;
+        .wax-seal:hover {
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 
+                0 15px 35px rgba(196, 30, 58, 0.6),
+                inset 0 0 20px rgba(255, 255, 255, 0.4);
+        }
+        
+        .seal-text {
+            color: #ffd700;
+            font-size: 28px;
+            font-weight: bold;
+            font-family: 'SimSun', serif;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* 信封上的地址信息 */
+        .address-info {
             position: absolute;
             top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: 'SimSun', serif;
+            left: 40px;
+            transform: translateY(-50%);
+            font-family: 'Times New Roman', serif;
+            color: #8b4513;
+            line-height: 1.6;
+        }
+        
+        .to-address {
+            font-size: 18px;
+            margin-bottom: 20px;
             font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .from-address {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        /* 年份显示 */
+        .year-display {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            font-family: 'Georgia', serif;
+            font-size: 36px;
+            color: #8b4513;
+            font-weight: bold;
+            letter-spacing: 3px;
         }
         
         /* 打开提示 */
         .open-hint {
-            padding-top: 25px;
-            text-align: center;
-            color: #8b4513;
-            font-family: 'Microsoft YaHei', sans-serif;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        
-        .open-hint:after {
-            content: "▼";
-            display: block;
-            margin-top: 15px;
-            color: #a0522d;
-            font-size: 24px;
-            animation: bounce 2s infinite;
-        }
-        
-        /* 信封内容 */
-        .envelope-content {
-            padding: 40px 20px;
-            text-align: center;
-            position: relative;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="none" stroke="%23d4af37" stroke-width="0.3" stroke-opacity="0.1" d="M0,50 L100,50 M50,0 L50,100"/></svg>');
-        }
-        
-        .sender-info {
-            display: inline-block;
-            padding: 12px 30px;
-            background: white;
-            border: 2px dashed #d4af37;
-            border-radius: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .year-display {
-            font-family: 'Microsoft YaHei', sans-serif;
-            font-size: 48px;
-            color: #d4af37;
-            font-weight: bold;
-            letter-spacing: 10px;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* 邮票 */
-        .stamp {
             position: absolute;
-            top: 15px;
-            right: 20px;
-            width: 50px;
-            height: 65px;
-            background: #f0e6d2;
-            border: 2px dashed #d4af37;
-            border-radius: 8px;
-            transform: rotate(12deg);
-            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.15);
-        }
-        
-        .stamp:before {
-            content: "邮";
-            position: absolute;
-            top: 50%;
+            bottom: 20px;
             left: 50%;
-            transform: translate(-50%, -50%);
-            color: #8b4513;
+            transform: translateX(-50%);
+            text-align: center;
+            color: #a0522d;
             font-size: 16px;
-            font-family: 'SimSun', serif;
-            font-weight: bold;
+            opacity: 0.8;
+            animation: hintPulse 2s infinite;
         }
         
-        /* 诗歌容器 */
-        .poem-container {
-            max-width: 700px;
-            margin: 50px auto;
-            background: #fff9f0;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(139, 69, 19, 0.2);
+        /* 信件抽出动画 */
+        .letter {
+            position: absolute;
+            width: 90%;
+            max-width: 800px;
+            background: #fffef5;
+            border: 1px solid #e8d9a3;
+            border-radius: 8px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
             padding: 0;
             opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform: translateY(100px) scale(0.95);
+            transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 5;
+            display: none;
         }
         
-        .poem-container.active {
+        .letter.open {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
+            display: block;
         }
         
-        /* 返回按钮 */
-        .back-btn {
-            text-align: right;
-            padding: 25px 40px 15px;
-        }
-        
-        .back-link {
-            display: inline-block;
-            padding: 10px 25px;
-            background: #f0e6d2;
-            color: #8b4513;
-            text-decoration: none;
-            font-family: 'Microsoft YaHei', sans-serif;
-            font-size: 15px;
-            border-radius: 25px;
-            border: 2px solid #d4af37;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .back-link:hover {
-            background: #e8d9a3;
-            transform: translateY(-2px);
-        }
-        
-        /* 诗歌内容 */
+        /* 诗歌内容区域 */
         .poem-content {
-            padding: 0 60px 50px;
+            padding: 60px 80px;
+            text-align: center;
             font-family: 'Times New Roman', Times, serif;
             color: #5d432c;
-            line-height: 1.9;
-            font-size: 20px;
-            text-align: center;
+            line-height: 2.2;
         }
         
         .poem-title {
-            text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             padding-bottom: 20px;
-            border-bottom: 3px solid #d4af37;
+            border-bottom: 2px solid #d4af37;
             position: relative;
         }
         
-        .poem-title h2 {
-            font-family: 'SimSun', 'STSong', serif;
-            color: #8b4513;
-            margin: 0;
+        .poem-title h1 {
             font-size: 32px;
+            color: #8b4513;
             font-weight: normal;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
         }
         
-        .poem-title:after {
-            content: "";
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 2px;
-            background: linear-gradient(90deg, #d4af37, #f5c542, #d4af37);
+        .poem-title h2 {
+            font-size: 20px;
+            color: #a0522d;
+            font-weight: normal;
+            letter-spacing: 8px;
         }
         
-        .poem-lines {
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="none" stroke="%23d4af37" stroke-width="0.5" stroke-opacity="0.08" d="M0,50 L100,50 M50,0 L50,100"/></svg>');
-            padding: 50px 40px;
-            border-radius: 10px;
-            margin: 20px 0;
+        /* 四句一段的诗歌格式 */
+        .poem-stanza {
+            margin: 40px 0;
+            padding: 30px;
+            background: #fefaf0;
+            border-left: 4px solid #d4af37;
+            border-radius: 0 8px 8px 0;
         }
         
         .poem-line {
-            margin: 28px 0;
+            font-size: 18px;
+            margin: 15px 0;
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.6s ease;
         }
         
-        .poem-container.active .poem-line {
+        .letter.open .poem-line {
             opacity: 1;
             transform: translateY(0);
         }
         
-        .poem-container.active .poem-line:nth-child(1) { transition-delay: 0.1s; }
-        .poem-container.active .poem-line:nth-child(2) { transition-delay: 0.2s; }
-        .poem-container.active .poem-line:nth-child(3) { transition-delay: 0.3s; }
-        .poem-container.active .poem-line:nth-child(4) { transition-delay: 0.4s; }
-        .poem-container.active .poem-line:nth-child(5) { transition-delay: 0.5s; }
-        .poem-container.active .poem-line:nth-child(6) { transition-delay: 0.6s; }
-        .poem-container.active .poem-line:nth-child(7) { transition-delay: 0.7s; }
-        .poem-container.active .poem-line:nth-child(8) { transition-delay: 0.8s; }
-        
-        /* 金色征途高亮 */
-        .gold-path {
-            margin: 50px 0 30px;
-            padding: 30px;
-            background: linear-gradient(90deg, rgba(212,175,55,0.1), rgba(212,175,55,0.2), rgba(212,175,55,0.1));
+        /* 金色征途部分 */
+        .golden-path {
+            margin: 60px 0 40px;
+            padding: 40px;
+            background: linear-gradient(90deg, 
+                rgba(212, 175, 55, 0.1) 0%,
+                rgba(212, 175, 55, 0.2) 50%,
+                rgba(212, 175, 55, 0.1) 100%);
             border-radius: 12px;
-            border: 2px solid rgba(212,175,55,0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
         }
         
-        .gold-path-text {
+        .golden-path-text {
             color: #d4af37;
-            font-size: 32px;
+            font-size: 20px;
             font-weight: bold;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.15);
-            letter-spacing: 1px;
+            line-height: 1.8;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 签名区域 */
+        .signature {
+            margin: 60px 0 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+        
+        .company-name-ru {
+            font-size: 28px;
+            color: #8b4513;
+            font-weight: bold;
+            margin: 10px 0;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .company-name-cn {
+            font-size: 18px;
+            color: #a0522d;
+            margin: 5px 0;
+            font-family: 'Microsoft YaHei', sans-serif;
         }
         
         /* 页脚 */
         .footer {
             background: #2c2416;
-            border-radius: 0 0 15px 15px;
             padding: 30px 40px;
             color: #d4c7a5;
-            font-family: Arial, sans-serif;
             font-size: 14px;
-            line-height: 1.6;
             text-align: center;
+            border-radius: 0 0 8px 8px;
         }
         
-        /* 动画 */
-        @keyframes pulse {
-            0% { transform: translateX(-50%) scale(1); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-            100% { transform: translateX(-50%) scale(1.1); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
+        .slogan {
+            font-size: 18px;
+            color: #f0e6d2;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
         }
         
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
-        }
-        
-        /* 背景装饰 */
-        body {
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #f8f5f0 0%, #f1e8d8 100%);
-            min-height: 100vh;
-            font-family: 'Microsoft YaHei', sans-serif;
-        }
-        
-        .snowflake {
-            position: fixed;
-            background: rgba(212,175,55,0.1);
+        /* 关闭按钮 */
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: #f5f0e6;
+            border: 2px solid #d4af37;
             border-radius: 50%;
-            pointer-events: none;
-            z-index: -1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+            color: #8b4513;
+            z-index: 20;
         }
         
-        /* 响应式 */
+        .close-btn:hover {
+            background: #d4af37;
+            color: white;
+            transform: rotate(90deg);
+        }
+        
+        /* 动画关键帧 */
+        @keyframes envelopeOpen {
+            0% {
+                transform: translateY(0) rotateX(0);
+                box-shadow: 0 20px 50px rgba(139, 69, 19, 0.3);
+            }
+            50% {
+                transform: translateY(-30px) rotateX(10deg);
+                box-shadow: 0 40px 80px rgba(139, 69, 19, 0.4);
+            }
+            100% {
+                transform: translateY(-100px) rotateX(20deg);
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+        
+        @keyframes sealPulse {
+            0% {
+                box-shadow: 
+                    0 10px 25px rgba(196, 30, 58, 0.4),
+                    inset 0 0 15px rgba(255, 255, 255, 0.3);
+                transform: translateX(-50%) scale(1);
+            }
+            100% {
+                box-shadow: 
+                    0 15px 35px rgba(196, 30, 58, 0.6),
+                    inset 0 0 20px rgba(255, 255, 255, 0.5);
+                transform: translateX(-50%) scale(1.05);
+            }
+        }
+        
+        @keyframes hintPulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        /* 响应式设计 */
         @media (max-width: 768px) {
-            .envelope { width: 280px; height: 180px; margin: 50px auto 30px; }
-            .poem-content { padding: 0 20px 30px; }
-            .poem-container { margin: 30px auto; }
-            .year-display { font-size: 36px; letter-spacing: 6px; }
-            .poem-title h2 { font-size: 24px; }
-            .gold-path-text { font-size: 24px; }
+            .envelope {
+                width: 350px;
+                height: 250px;
+            }
+            
+            .wax-seal {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .seal-text {
+                font-size: 20px;
+            }
+            
+            .stamp-area {
+                top: 20px;
+                right: 20px;
+                width: 70px;
+                height: 100px;
+            }
+            
+            .russian-stamp {
+                width: 50px;
+                height: 70px;
+            }
+            
+            .stamp-center {
+                font-size: 18px;
+            }
+            
+            .address-info {
+                left: 25px;
+            }
+            
+            .to-address {
+                font-size: 14px;
+            }
+            
+            .from-address {
+                font-size: 12px;
+            }
+            
+            .year-display {
+                font-size: 28px;
+                top: 25px;
+                left: 25px;
+            }
+            
+            .poem-content {
+                padding: 30px 20px;
+            }
+            
+            .poem-title h1 {
+                font-size: 24px;
+            }
+            
+            .poem-title h2 {
+                font-size: 16px;
+                letter-spacing: 4px;
+            }
+            
+            .poem-stanza {
+                padding: 20px;
+            }
+            
+            .poem-line {
+                font-size: 16px;
+            }
+            
+            .golden-path-text {
+                font-size: 18px;
+            }
+            
+            .company-name-ru {
+                font-size: 22px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .envelope {
+                width: 300px;
+                height: 220px;
+            }
+            
+            .envelope-container {
+                height: 400px;
+            }
+            
+            .poem-content {
+                padding: 25px 15px;
+            }
         }
     </style>
 </head>
 <body>
-
-<!-- 背景装饰雪花 -->
-<div id="snowflakes"></div>
-
-<!-- 信封 -->
-<div class="envelope" id="envelope">
-    <div class="envelope-flap">
-        <div class="wax-seal"></div>
-        <div class="open-hint">点击开启新年祝福</div>
-    </div>
-    <div class="envelope-content">
-        <div class="stamp"></div>
-        <div class="sender-info">
-            <span style="font-family:'KaiTi', 'STKaiti', serif; color:#8b4513; font-size:20px;">
-                北京金路国际 敬呈
-            </span>
-        </div>
-        <div class="year-display">
-            2<span style="color:#8b4513;">0</span>2<span style="color:#8b4513;">6</span>
-        </div>
-    </div>
-</div>
-
-<!-- 诗歌容器 -->
-<div class="poem-container" id="poemContainer">
-    <div class="back-btn">
-        <a class="back-link" onclick="closePoem()">返回信封 ▲</a>
-    </div>
-    
-    <div class="poem-content">
-        <div class="poem-title">
-            <h2>新年贺信</h2>
-        </div>
-        
-        <div class="poem-lines">
-            <!-- 您的俄语诗歌 -->
-            <div class="poem-line"><strong>Уважаемые партнеры,<br>Дорогие друзья!</strong></div>
-            <div class="poem-line">Поздравляем Вас с Наступающим!<br>Ведь наш союз крепнет с каждым днём.</div>
-            <div class="poem-line">Сквозь вызовы маршируем, рука об руку;<br>И перспективы созидаем, плечом к плечу.</div>
-            <div class="poem-line">Пусть ветры рынка бьют сильнее,<br>Сплоченность наша станет щитом!</div>
-            <div class="poem-line">Взаимное доверие в борьбе за дело,<br>Ведет к победам за столом.</div>
-            <div class="poem-line">Год уходящий, в нашей общей чести,<br>Богат свершеньями, что множат поворот.</div>
-            <div class="poem-line">Грядущий год, в сиянии славы народов!<br>Нам сокровищницу новую откроет тут.</div>
+    <div class="container">
+        <div class="envelope-container">
+            <!-- 俄罗斯风格信封 -->
+            <div class="envelope" id="envelope">
+                <div class="envelope-front">
+                    <div class="envelope-pattern"></div>
+                    
+                    <!-- 年份 -->
+                    <div class="year-display">2026</div>
+                    
+                    <!-- 地址信息 -->
+                    <div class="address-info">
+                        <div class="to-address">
+                            Уважаемым Партнёрам<br>
+                            Дорогим Друзьям
+                        </div>
+                        <div class="from-address">
+                            ООО «Пекинский Золотой Путь»<br>
+                            Beijing, China
+                        </div>
+                    </div>
+                    
+                    <!-- 俄罗斯邮票 -->
+                    <div class="stamp-area">
+                        <div class="russian-stamp">
+                            <div class="stamp-design">
+                                <div class="stamp-center">₽</div>
+                            </div>
+                        </div>
+                        <div class="open-hint">Нажмите печать чтобы открыть</div>
+                    </div>
+                    
+                    <!-- 火漆印章 - 点击按钮 -->
+                    <div class="wax-seal" id="waxSeal" onclick="openEnvelope()">
+                        <div class="seal-text">金</div>
+                    </div>
+                </div>
+            </div>
             
-            <div class="gold-path poem-line">
-                <div style="margin-bottom:15px;">С новым 2026-ым годом,</div>
-                <div style="margin-bottom:15px;">С искренне наилучшими желаниями,</div>
-                <div class="gold-path-text">С вечно крепчайшей верой в наш, общий,<br>ЗОЛОТОЙ ПУТЬ!</div>
+            <!-- 信件内容 -->
+            <div class="letter" id="letter">
+                <div class="close-btn" onclick="closeLetter()">×</div>
+                
+                <div class="poem-content">
+                    <div class="poem-title">
+                        <h1>С Новым 2026 Годом!</h1>
+                        <h2>ПОЗДРАВИТЕЛЬНОЕ ПИСЬМО</h2>
+                    </div>
+                    
+                    <!-- 诗歌内容 - 四句一段 -->
+                    <div class="poem-stanza">
+                        <div class="poem-line"><strong>Уважаемые партнеры,</strong></div>
+                        <div class="poem-line"><strong>Дорогие друзья!</strong></div>
+                        <div class="poem-line">Поздравляем Вас с Наступающим!</div>
+                        <div class="poem-line">Ведь наш союз крепнет с каждым днём.</div>
+                    </div>
+                    
+                    <div class="poem-stanza">
+                        <div class="poem-line">Сквозь вызовы маршируем, рука об руку;</div>
+                        <div class="poem-line">И перспективы созидаем, плечом к плечу.</div>
+                        <div class="poem-line">Пусть ветры рынка бьют сильнее,</div>
+                        <div class="poem-line">Сплоченность наша станет щитом!</div>
+                    </div>
+                    
+                    <div class="poem-stanza">
+                        <div class="poem-line">Взаимное доверие в борьбе за дело,</div>
+                        <div class="poem-line">Ведет к победам за столом.</div>
+                        <div class="poem-line">Год уходящий, в нашей общей чести,</div>
+                        <div class="poem-line">Богат свершеньями, что множат поворот.</div>
+                    </div>
+                    
+                    <div class="poem-stanza">
+                        <div class="poem-line">Грядущий год, в сиянии славы народов!</div>
+                        <div class="poem-line">Нам сокровищницу новую откроет тут.</div>
+                    </div>
+                    
+                    <!-- 金色征途 -->
+                    <div class="golden-path">
+                        <div class="golden-path-text poem-line">С новым 2026-ым годом,</div>
+                        <div class="golden-path-text poem-line">С искренне наилучшими желаниями,</div>
+                        <div class="golden-path-text poem-line">С вечно крепчайшей верой в наш, общий,</div>
+                        <div class="golden-path-text poem-line">ЗОЛОТОЙ ПУТЬ!</div>
+                    </div>
+                    
+                    <!-- 签名 -->
+                    <div class="signature">
+                        <div class="poem-line">Ваш единомышленник,</div>
+                        <div class="company-name-ru poem-line">ООО «Пекинский Золотой Путь»</div>
+                        <div class="company-name-cn poem-line">Beijing Gold Way International Trade Company Ltd.</div>
+                    </div>
+                </div>
+                
+                <div class="footer">
+                    <div class="slogan">金诚合作 · 路通天下</div>
+                    <div>© 2025 北京金路国际贸易有限公司 版权所有</div>
+                    <div>电话: +86-10-XXXXXXX | 邮箱: contact@goldwaytrade.com</div>
+                </div>
             </div>
         </div>
         
-        <!-- 签名 -->
-        <div style="margin:60px 0 40px; padding-top:30px; border-top:2px solid #eee;">
-            <p style="color:#666; font-size:18px; margin:15px 0;">Ваш единомышленник,</p>
-            <p style="color:#8b4513; font-size:28px; font-weight:bold; margin:10px 0;">ООО «Пекинский Золотой Путь»</p>
-            <p style="color:#a0522d; font-size:16px; margin:10px 0;">(Beijing Gold Way International Trade Company Ltd.)</p>
+        <div style="text-align: center; margin-top: 30px; color: #8b7255; font-size: 14px;">
+            <p>点击火漆印章开启新年祝福信件</p>
         </div>
     </div>
-    
-    <div class="footer">
-        <p style="margin:0 0 15px; color:#f0e6d2; font-size:18px;"><strong>金诚合作 · 路通天下</strong></p>
-        <p style="margin:0; color:#b8a888; font-size:13px;">
-            © 2025 北京金路国际贸易有限公司 版权所有<br>
-            电话: +86-10-XXXXXXX | 邮箱: contact@goldwaytrade.com<br>
-            www.goldwaytrade.com
-        </p>
-    </div>
-</div>
 
-<script>
-    // 点击信封打开诗歌
-    document.getElementById('envelope').addEventListener('click', function() {
-        this.classList.add('active');
-        document.getElementById('poemContainer').classList.add('active');
-    });
-    
-    // 关闭诗歌返回信封
-    function closePoem() {
-        document.getElementById('envelope').classList.remove('active');
-        document.getElementById('poemContainer').classList.remove('active');
-    }
-    
-    // 创建背景雪花
-    function createSnowflakes() {
-        const snowContainer = document.getElementById('snowflakes');
-        for (let i = 0; i < 20; i++) {
-            const snowflake = document.createElement('div');
-            snowflake.className = 'snowflake';
-            const size = Math.random() * 8 + 4;
-            snowflake.style.width = size + 'px';
-            snowflake.style.height = size + 'px';
-            snowflake.style.left = Math.random() * 100 + 'vw';
-            snowflake.style.top = Math.random() * 100 + 'vh';
-            snowflake.style.animation = `fall ${Math.random() * 5 + 5}s linear infinite`;
-            snowContainer.appendChild(snowflake);
+    <script>
+        // 打开信封动画
+        function openEnvelope() {
+            const envelope = document.getElementById('envelope');
+            const letter = document.getElementById('letter');
+            const waxSeal = document.getElementById('waxSeal');
+            
+            // 播放信封打开动画
+            envelope.classList.add('open');
+            waxSeal.style.display = 'none';
+            
+            // 短暂延迟后显示信件
+            setTimeout(() => {
+                letter.classList.add('open');
+                
+                // 逐行显示诗歌内容
+                const poemLines = document.querySelectorAll('.poem-line');
+                poemLines.forEach((line, index) => {
+                    setTimeout(() => {
+                        line.style.opacity = '1';
+                        line.style.transform = 'translateY(0)';
+                    }, index * 100 + 500);
+                });
+            }, 800);
         }
-    }
-    
-    // 雪花飘落动画
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes fall {
-            0% { transform: translateY(-100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.8; }
-            90% { opacity: 0.8; }
-            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        
+        // 关闭信件
+        function closeLetter() {
+            const envelope = document.getElementById('envelope');
+            const letter = document.getElementById('letter');
+            const waxSeal = document.getElementById('waxSeal');
+            
+            // 隐藏信件
+            letter.classList.remove('open');
+            
+            // 重置诗歌行的动画状态
+            const poemLines = document.querySelectorAll('.poem-line');
+            poemLines.forEach(line => {
+                line.style.opacity = '0';
+                line.style.transform = 'translateY(20px)';
+            });
+            
+            // 短暂延迟后重置信封
+            setTimeout(() => {
+                envelope.classList.remove('open');
+                waxSeal.style.display = 'flex';
+            }, 500);
         }
-    `;
-    document.head.appendChild(style);
-    
-    // 页面加载时创建雪花
-    window.addEventListener('load', createSnowflakes);
-</script>
-
+        
+        // 信封点击也可以打开
+        document.getElementById('envelope').addEventListener('click', openEnvelope);
+        
+        // 键盘ESC键关闭信件
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeLetter();
+            }
+        });
+    </script>
 </body>
 </html>
